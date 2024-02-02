@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < Sinatra::Base
   require_all 'app/**/*.rb'
 

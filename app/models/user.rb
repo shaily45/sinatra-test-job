@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # models/user.rb
 
 require 'sinatra/activerecord'
@@ -19,7 +21,7 @@ class User < ActiveRecord::Base
     email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
     return if email_regex.match?(email)
 
-    errors.add(:email, I18n.t(errors.invalid_format))
+    errors.add(:email, I18n.t('errors.validation_failed'))
   end
 
   def send_welcome_email

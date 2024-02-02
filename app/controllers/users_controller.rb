@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # controllers/users_controller.rb
 class UsersController < ApplicationController
   post '/signup' do
@@ -6,21 +8,22 @@ class UsersController < ApplicationController
       return render_unprocessable_entity(user.errors) unless user.save
 
       authenticate_user = AuthenticateUser.new(@parsed_params['email'], @parsed_params['password']).call
-      if success?(authenticate_user)
-        render_success_response(authenticate_user)
-      else
-        render_unprocessable_entity(authenticate_user.errors)
-      end
+      return render_success_response(authenticate_user) if success?(authenticate_user)
+
+      render_unprocessable_entity(authenticate_user.errors)
     end
   end
 
   post '/login' do
     handle_exceptions do
-      authenticate_user = AuthenticateUser.new(@parsed_params['email'], @parsed_params['password']).call
+      authenticate_user = AuthenticateUser.new(@parsed_params['email'], @parsed_params['password'],
+                                               @parsed_params['remember_me']).call
       if success?(authenticate_user)
-        render_success_response(authenticate_user)
+        return render_success_response(authenticate_user, I18n.t('login.otp_sent')) if authenticate_user[:otp].present?
+
+        render_success_response(authenticate_user, I18n.t('login.login_successful'))
       else
-        render_unprocessable_entity(authenticate_user)
+        render_unprocessable_entity(authenticate_user, I18n.t('login.login_failed'))
       end
     end
   end
@@ -53,7 +56,7 @@ class UsersController < ApplicationController
   put '/disable_two_factor_authentication' do
     handle_exceptions do
       unless @current_user.two_factor_enabled?
-        return render_success_response(@current_user, I18n.t('two_factor_authentication.already_enabled'))
+        return render_success_response(@current_user, I18n.t('two_factor_authentication.already_disabled'))
       end
 
       if @current_user.update(two_factor_enabled: false)

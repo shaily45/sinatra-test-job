@@ -1,0 +1,17 @@
+en:
+  login:
+    login_successful: 'Login Successful'
+    login_failed: 'Invalid Email or Password'
+    otp_sent: 'OTP Sent'
+  two_factor_authentication:
+    invalid_otp: 'Invalid OTP'
+    already_disabled: 'Two-factor authentication is already disabled'
+    otp_verified: 'OTP Verification Successful'
+  password:
+    change_password: 'Password Changed Successfully'
+    invalid_password: 'Invalid Password'
+  errors:
+    user_not_found: 'User not found'
+    invalid_credentials: 'Invalid Credentials'
+    validation_failed: 'Validation failed'
+    unauthorized: 'You are not authorized.'

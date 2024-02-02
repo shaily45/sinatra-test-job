@@ -1,0 +1,43 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    command: ["ruby", "config/environment.rb", "-o", "0.0.0.0"]
+    ports:
+      - "4567:4567"
+    depends_on:
+      db:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - ./entrypoint.sh
+    links:
+      - db:db_link
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h db -U ${DB_USERNAME} -d ${DB_NAME}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    environment:
+      PG_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTRES_HOST: ${DB_HOST}
+
+volumes:
+  postgres_data:
+

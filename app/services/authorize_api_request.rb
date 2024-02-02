@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthorizeApiRequest < ApplicationService
   attr_reader :token
 
@@ -15,7 +17,7 @@ class AuthorizeApiRequest < ApplicationService
   end
 
   def decoded_auth_token
-    @decoded_auth_token ||= JWT.decode(token, 'your_secret_key')
+    @decoded_auth_token ||= JWT.decode(token, ENV['SECRET_KEY_BASE'])
   end
 
   def http_auth_header

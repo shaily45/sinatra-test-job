@@ -24,7 +24,6 @@ gem 'bcrypt', '~> 3.1.20'
 gem 'tux', '~> 0.3.0'
 
 gem 'carrierwave', '~> 3.0'
-gem 'dotenv', '~> 2.8.1'
 gem 'i18n', '~> 1.14.1'
 gem 'jwt', '~> 2.7.1'
 gem 'pony', '~> 1.13.1'
@@ -41,3 +40,5 @@ group :test do
   gem 'rspec', '~> 3.12.0'
   gem 'simplecov', '~> 0.22.0'
 end
+
+gem "rackup", "~> 2.1"
