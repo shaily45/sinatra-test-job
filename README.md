@@ -43,21 +43,30 @@ After successful registration, a confirmation email should be sent to the provid
 
   2. Change into the app directory:
 
-  `$ cd `
+  `$ cd sinatra-test-job`
 
-  3. Install the required gems:
+  3. Install Ruby 3.1.0 and Bundler if you haven't already installed it:
+
+  `$ gem install bundler`
+
+  4. Install the required gems:
 
    `$ bundle install`
 
-  4. Create the database:
+  5. Install latest version of docker and docker compose:
 
-   `$ rake db:create`
 
-  5. Migrate the database:
+  6. Rename .env.example to .env
 
-  `$ rake db:migrate`
 
-  6. Create a .env file in root directory then you have to change the values in env file:
+  7. Replace the values in the .env file with your own values
 
-  7. Start the sinatra server using:
-    $ bundle exec ruby ./config/environment.rb
+
+  8. Start the server (docker will handle db creation and migrations):
+    `$ docker-compose up --build` or `$ docker-compose up`
+
+  9. To enter into rake console:
+    `$ docker-compose run app bundle exec rake console`
+
+  10. For running tests:
+    `$ docker-compose run app bundle exec rspec {test_file_name}`
