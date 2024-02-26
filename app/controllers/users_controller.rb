@@ -9,8 +9,7 @@ class UsersController < ApplicationController
 
       authenticate_user = AuthenticateUser.new(@parsed_params['email'], @parsed_params['password']).call
       return render_success_response(authenticate_user) if success?(authenticate_user)
-
-      render_unprocessable_entity(authenticate_user.errors)
+      render_unprocessable_entity(authenticate_user)
     end
   end
 
@@ -23,15 +22,14 @@ class UsersController < ApplicationController
 
         render_success_response(authenticate_user, I18n.t('login.login_successful'))
       else
-        render_unprocessable_entity(authenticate_user, I18n.t('login.login_failed'))
+        render_unprocessable_entity(authenticate_user)
       end
     end
   end
 
   post '/enable_two_factor_authentication' do
     handle_exceptions do
-      find_user_by_email
-      service = TwoFactorAuthenticationService.new(@user, request)
+      service = TwoFactorAuthenticationService.new(@current_user, request)
       result = service.enable_2fa_authentication
       if success?(result)
         render_success_response(result)
@@ -43,7 +41,7 @@ class UsersController < ApplicationController
 
   post '/verify_two_factor_authentication' do
     handle_exceptions do
-      verify_service = VerifyTwoFactorAuthenticationService.new(request, @parsed_params)
+      verify_service = VerifyTwoFactorAuthenticationService.new(@current_user, request, @parsed_params)
       result = verify_service.verify_authentication
       if success?(result)
         render_success_response(result)
@@ -56,11 +54,11 @@ class UsersController < ApplicationController
   put '/disable_two_factor_authentication' do
     handle_exceptions do
       unless @current_user.two_factor_enabled?
-        return render_success_response(@current_user, I18n.t('two_factor_authentication.already_disabled'))
+        return render_success_response(@current_user.email, I18n.t('two_factor_authentication.already_disabled'))
       end
 
       if @current_user.update(two_factor_enabled: false)
-        render_success_response(@current_user)
+        render_success_response(@current_user.email, I18n.t('two_factor_authentication.disabled'))
       else
         render_unprocessable_entity(@current_user.errors)
       end
@@ -70,7 +68,6 @@ class UsersController < ApplicationController
   put '/change_password' do
     handle_exceptions do
       return render_unprocessable_entity(I18n.t('password.invalid_password')) unless correct_password?
-
       if @current_user.update_password(@parsed_params['new_password'])
         render_success_response(@current_user.email, I18n.t('password.change_password'))
       else
@@ -81,8 +78,8 @@ class UsersController < ApplicationController
 
   private
 
-  def find_user_by_email
-    @user ||= User.find_by(email: @parsed_params['email'])
+  def validate_user_email(email)
+    @current_user.email == email
   end
 
   def parse_request

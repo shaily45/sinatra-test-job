@@ -2,10 +2,6 @@
 
 Two-Factor Authentication Service is a simple sinatra application that is use to authenticate the user using any authenticator application. This README will guide you through setting up the application and adding a new feature to the application.
 
-### Task: Development of Two-Factor Authentication Service
-
-- Your task is to develop a two-factor authentication service that provides an additional layer of security for users. The service should include registration, login with two-factor authentication, and account settings management.
-
 ### Requirements
 
 1. Registration:
@@ -39,19 +35,19 @@ After successful registration, a confirmation email should be sent to the provid
 
   1. Clone your repository:
 
-    `https://github.com/shaily45/sinatra-test-job.git`
+    https://github.com/shaily45/sinatra-test-job.git
 
   2. Change into the app directory:
 
-  `$ cd sinatra-test-job`
+    cd sinatra-test-job
 
   3. Install Ruby 3.1.0 and Bundler if you haven't already installed it:
 
-  `$ gem install bundler`
+    gem install bundler
 
   4. Install the required gems:
 
-   `$ bundle install`
+    bundle install
 
   5. Install latest version of docker and docker compose:
 
@@ -63,10 +59,36 @@ After successful registration, a confirmation email should be sent to the provid
 
 
   8. Start the server (docker will handle db creation and migrations):
-    `$ docker-compose up --build` or `$ docker-compose up`
+
+    docker-compose up --build` or `docker-compose up
 
   9. To enter into rake console:
-    `$ docker-compose run app bundle exec rake console`
+
+    docker-compose run app bundle exec rake console
 
   10. For running tests:
-    `$ docker-compose run app bundle exec rspec {test_file_name}`
+
+    docker-compose run app bundle exec rspec {test_file_name}
+
+
+
+### Postman Collection
+
+  To import the Postman collection via the provided link, follow these steps:
+
+  https://api.postman.com/collections/23980975-9be5ec07-cd00-4c54-9888-9dbdb50ade7e?access_key=PMAT-01HNA68NVKKAAVDD7Y7T44V2R2
+  
+    - Open the Postman application or navigate to the Postman web dashboard.
+    - In the top-left corner, click on the "Import" button. Select the "Link" tab.
+    - Paste the provided link into the input field.
+    - Click on the "Continue" button.
+    - Postman will fetch the collection from the link and present you with the import options.
+    - Review the import settings and make any necessary adjustments.
+    - Click on the "Import" button to complete the process.
+
+
+### Postman Collection Documentation:
+  
+  https://documenter.getpostman.com/view/33291951/2sA2rGuyke
+
+  Note: All the API documentation can be found at the link above, except for the QR code that needs to be scanned. When opening the QR code URL, a new request will be generated, and you will need to pass the authenticity token in the request header to open it.

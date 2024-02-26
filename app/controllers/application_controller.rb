@@ -8,8 +8,9 @@ class ApplicationController < Sinatra::Base
   private
 
   def authenticate_request
-    auth = AuthorizeApiRequest.call(request.env['HTTP_TOKEN'])
+    token = request.env['HTTP_TOKEN']
+    auth = AuthorizeApiRequest.call(token, request)
     @current_user = auth.result
-    render_unauthorized_response(auth.errors) and return unless @current_user.present?
-  end
+    halt 401, render_unauthorized_response(auth.errors) unless @current_user.present? && @current_user.is_a?(User)
+  end  
 end

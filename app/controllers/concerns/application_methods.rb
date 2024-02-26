@@ -4,13 +4,13 @@ module ApplicationMethods
   extend ActiveSupport::Concern
 
   included do
-    before ['/disable_two_factor_authentication', '/change_password'] do
-      authenticate_request
-    end
-
-    before ['/signup', '/login', '/verify_two_factor_authentication', '/enable_two_factor_authentication',
+    before ['/signup', '/login', '/verify_two_factor_authentication',
             '/change_password'] do
       parse_request
+    end
+
+    before ['/disable_two_factor_authentication', '/change_password', '/enable_two_factor_authentication', '/uploads/*', '/verify_two_factor_authentication'] do
+      authenticate_request
     end
   end
 
@@ -69,7 +69,7 @@ module ApplicationMethods
   def render_unauthorized_response(message = {})
     json_response({
                     success: false,
-                    message: I18n.t(errors.unauthorized),
+                    message: ,
                     errors: [message]
                   }, 401)
   end

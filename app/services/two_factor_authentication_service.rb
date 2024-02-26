@@ -10,14 +10,11 @@ class TwoFactorAuthenticationService
   end
 
   def enable_2fa_authentication
-    return errors.add(:user_authentication, I18n.t('errors.user_not_found')) if user.nil?
+    return handle_already_enabled_error if user.two_factor_enabled?
 
-    if update_user
-      { status: 'success', data: allowed_attributes(user) }
-    else
-      StandardError => e
-      errors.add(:user_authentication, "Unexpected error: #{e.message}")
-    end
+    { status: 'success', data: allowed_attributes(user) } if update_user
+  rescue StandardError => e
+    handle_unexpected_error(e)
   end
 
   private
@@ -25,7 +22,6 @@ class TwoFactorAuthenticationService
   def update_user
     user.update(
       otp_secret: ROTP::Base32.random_base32,
-      two_factor_enabled: true
     )
   end
 
@@ -58,5 +54,17 @@ class TwoFactorAuthenticationService
 
   def allowed_attributes(user)
     { email: user.email, qr_code_url: generate_qr_code_url, created_at: user.created_at, updated_at: user.updated_at }
+  end
+
+  def handle_user_not_found_error
+    errors.add(:user_authentication, I18n.t('errors.user_not_found'))
+  end
+
+  def handle_already_enabled_error
+    errors.add(:user_authentication, I18n.t('two_factor_authentication.already_enabled'))
+  end
+
+  def handle_unexpected_error(exception)
+    errors.add(:user_authentication, "Unexpected error: #{exception.message}")
   end
 end
